@@ -1,0 +1,56 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compileOnly "androidx.appcompat:appcompat:${rootProject.ext.dependencies.appcompat_version}"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${rootProject.ext.dependencies.kotlin_version}"
+}
+
+
+apply from: '../jcenter-push.gradle'
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            groupId publishedGroupId
+            artifactId 'social-core'
+            packaging 'aar'
+            name bintrayName
+            url siteUrl
+            licenses {
+                license {
+                    name licenseName
+                    url licenseUrl
+                }
+            }
+            developers {
+                developer {
+                    id developerId
+                    name developerName
+                    email developerEmail
+                }
+            }
+            scm {
+                connection gitUrl
+                developerConnection gitUrl
+                url siteUrl
+            }
+        }
+    }
+}

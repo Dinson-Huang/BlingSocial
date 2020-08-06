@@ -1,0 +1,5 @@
+include ':blingsocial-alipay'
+include ':blingsocial-wechat'
+include ':blingsocial-core'
+include ':app'
+rootProject.name = "BlingSocial"

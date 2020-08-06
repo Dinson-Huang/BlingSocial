@@ -1,0 +1,74 @@
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+
+ext {
+    bintrayRepo = 'android'
+    bintrayName = 'blingsocial'
+
+    publishedGroupId = 'com.dinson.bling'
+    libraryDescription = '第三方登录注册'
+
+    siteUrl = 'https://github.com/Dinson-Huang'
+    gitUrl = 'https://github.com/Dinson-Huang'
+
+    developerId = 'dinson'
+    developerName = 'dinson'
+    developerEmail = 'dinsom.me@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+version = libraryVersion
+//important, if null, will issue: Maven group, artifact or version not match ...
+group = publishedGroupId
+
+// 生成源文件的任务
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    getArchiveClassifier().convention('sources')
+    getArchiveClassifier().set('sources')
+}
+
+// 生成文档的任务
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+// 生成文档Jar的任务
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    getArchiveClassifier().convention('javadoc')
+    getArchiveClassifier().set('javadoc')
+    from javadoc.destinationDir
+}
+
+// 打包内容
+artifacts {
+    archives sourcesJar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('./constant.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("BINTRAY_USER")
+    key = properties.getProperty("BINTRAY_KEY")
+
+    configurations = ['archives']
+    pkg {
+        repo = bintrayRepo
+        name = bintrayName
+        desc = libraryDescription
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = allLicenses
+        publish = true
+        publicDownloadNumbers = true
+        version {
+            name = libraryVersion
+            desc = libraryVersionDesc
+        }
+    }
+}

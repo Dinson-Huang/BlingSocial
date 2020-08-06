@@ -1,0 +1,69 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDir(['libs'])
+        }
+    }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
+}
+
+dependencies {
+    //implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'])
+    api(name: 'alipaySdk-15.7.9-20200727142846', ext: 'aar')
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${rootProject.ext.dependencies.kotlin_version}"
+    implementation project(':blingsocial-core')
+}
+
+
+apply from: '../jcenter-push.gradle'
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            groupId publishedGroupId
+            artifactId 'social-alipay'
+            packaging 'aar'
+            name bintrayName
+            url siteUrl
+            licenses {
+                license {
+                    name licenseName
+                    url licenseUrl
+                }
+            }
+            developers {
+                developer {
+                    id developerId
+                    name developerName
+                    email developerEmail
+                }
+            }
+            scm {
+                connection gitUrl
+                developerConnection gitUrl
+                url siteUrl
+            }
+        }
+    }
+}
